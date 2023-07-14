@@ -14,11 +14,11 @@ class Film(Base):
     description = Column(VARCHAR(SHORT_TEXT_LENGHT))
     year = Column(Integer)
 
-    director_id = Column(Integer, ForeignKey("director.id"))
-    genre_id = Column(Integer, ForeignKey("genre.id"))
+    director_id = Column(Integer, ForeignKey("film.id"))
+    genre_id = Column(Integer, ForeignKey("film.id"))
 
     director = relationship("Director", back_populates="films")
-    genre = relationship("Genre", back_populates="films")
+    genre = relationship("Genre", back_populates="film")
     reviews = relationship("Review", back_populates="film")
 
 class Director(Base):
