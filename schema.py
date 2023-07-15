@@ -1,50 +1,60 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, VARCHAR, Float
-from sqlalchemy.orm import relationship
+from pydantic import BaseModel
+from typing import List
 
-from .database import Base
+class FilmBase(BaseModel):
+    title: str
+    description: str | None = None
+    year: int
 
-NAME_MAX_LENGHT = 100
-SHORT_TEXT_LENGHT = 400
+class DirectorBase(BaseModel):
+    name: str
+    bio: str | None = None
 
-class Film(Base):
-    __tablename__ = "film"
+class GenreBase(BaseModel):
+    name: str
 
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(VARCHAR(NAME_MAX_LENGHT))
-    description = Column(VARCHAR(SHORT_TEXT_LENGHT))
-    year = Column(Integer)
+class ReviewBase(BaseModel):
+    comment: str
+    rating: float
 
-    director_id = Column(Integer, ForeignKey("film.id"))
-    genre_id = Column(Integer, ForeignKey("film.id"))
+class FilmCreate(FilmBase):
+    pass
 
-    director = relationship("Director", back_populates="films")
-    genre = relationship("Genre", back_populates="film")
-    reviews = relationship("Review", back_populates="film")
+class DirectorCreate(DirectorBase):
+    pass
 
-class Director(Base):
-    __tablename__ = "director"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(VARCHAR(NAME_MAX_LENGHT))
-    bio = Column(VARCHAR(SHORT_TEXT_LENGHT))
+class GenreCreate(GenreBase):
+    pass
 
-    films = relationship("Film", back_populates="director")
+class ReviewCreate(ReviewBase):
+    pass
 
-class Genre(Base):
-    __tablename__ = "genre"
+class Film(FilmBase):
+    id: int
+    director_id: int
+    genre_id: int
+    reviews: List['Review'] = []
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(VARCHAR(NAME_MAX_LENGHT))
+    class Config:
+        orm_mode = True
 
-    films = relationship("Film", back_populates="genre")
+class Director(DirectorBase):
+    id: int
+    films: List['Film'] = []
 
-class Review(Base):
-    __tablename__ = "review"
+    class Config:
+        orm_mode = True
 
-    id = Column(Integer, primary_key=True, index=True)
-    comment = Column(VARCHAR(SHORT_TEXT_LENGHT))
-    rating = Column(Float)
-    
-    film_id = Column(Integer, ForeignKey("film.id"))
+class Genre(GenreBase):
+    id: int
+    films: List['Film'] = []
 
-    film = relationship("Film", back_populates="reviews")
+    class Config:
+        orm_mode = True
+
+class Review(ReviewBase):
+    id: int
+    film_id: int
+
+    class Config:
+        orm_mode = True
