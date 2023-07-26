@@ -32,7 +32,7 @@ def get_director_by_id(db: Session, director_id: int):
     return db.query(models.Director).filter(models.Director.id == director_id).first()
 
 
-def get_director_by_name(db: Session, name: int):
+def get_director_by_name(db: Session, name: str):
     return db.query(models.Director).filter(models.Director.name == name).first()
 
 
@@ -55,7 +55,7 @@ def get_genre_by_id(db: Session, genre_id: int):
     return db.query(models.Genre).filter(models.Genre.id == genre_id).first()
 
 
-def get_genre_by_name(db: Session, name: int):
+def get_genre_by_name(db: Session, name: str):
     return db.query(models.Genre).filter(models.Genre.name == name).first()
 
 
